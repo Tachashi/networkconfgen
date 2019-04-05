@@ -1,0 +1,91 @@
+!
+no service pad
+service timestamps debug datetime localtime
+service timestamps log datetime localtime
+service password-encryption
+!
+hostname {{ hostname }}
+!
+no logging console
+enable secret {{ secret }}
+!
+username {{ username }} privilege 15 password {{ password }}
+clock timezone JST 9
+ip subnet-zero
+no ip domain-lookup
+ip domain-name {{ hostname }}
+ip ssh version 2
+!
+spanning-tree mode pvst
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+!
+!
+{% for item in interfaces %}
+    {% if item.port_no | regex_search('^(Fast|Gigabit)*Ethernet[0-9/]+$') == item.port_no %}
+        interface {{ item.port_no }}
+        {% if item.description != '' %}
+             description << {{ item.description }} >>
+        {% endif %}
+        {% if item.mode == 'access' %}
+             switchport access {{ item.vlan }}
+             switchport mode access
+        {% elif item.mode == 'trunk' %}
+             switchport mode trunk
+        {% endif %}
+        {% if item.duplex != 'auto' %}
+             duplex {{ item.duplex }}
+        {% endif %}
+        {% if item.speed != 'auto' %}
+             speed {{ item.speed }}
+        {% endif %}
+        {% if item.status == 'x' %}
+             shutdown
+        {% endif %}
+        {% if item.portfast == 'o' %}
+             spanning-tree portfast
+        {% endif %}
+            !
+    {% else %}
+        {{ _ERROR_.no_match }}
+    {% endif %}
+{% endfor %}
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+{% if vlan_num|int() <= 4094 %}
+interface Vlan{{ vlan_num }}
+ description {{ vlan_desc }}
+ ip address {{ ip_address }} {{ subnet|dotted_decimal }}
+ no ip route-cache
+{% else %}
+{{ _ERROR_.invalid_vlan_range }}
+{% endif %}
+!
+ip default-gateway {{ default_gw | ipaddr  }}
+no ip http server
+no ip http secure-server
+!
+logging 192.168.100.107
+snmp-server community C1sc0 RO
+snmp-server host 192.168.100.107 C1sc0 
+banner login ^C
+============NOTICE==============
+| This is test device for demo |
+================================
+^C
+!
+line con 0
+line vty 0 4
+ login local
+line vty 5 15
+ login local
+!
+ntp server {{ ntp_server | ipaddr }}
+!
+crypto key generate rsa modulus 2048
+!
+end

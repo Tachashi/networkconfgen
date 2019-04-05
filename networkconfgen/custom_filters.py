@@ -3,6 +3,7 @@ Any custom filter that is bound to the Jinja2 Template Engine used in the Networ
 """
 import logging
 import re
+import ipaddress
 from ipaddress import IPv4Network
 from networkconfgen.constants import ERROR_UNKNOWN, ERROR_INVALID_VLAN_RANGE, ERROR_INVALID_VALUE, \
     CISCO_INTERFACE_PATTERN, JUNIPER_INTERFACE_PATTERN, OS_CISCO_IOS, OS_JUNIPER_JUNOS, ERROR_PARAMETER, \
@@ -248,3 +249,40 @@ def split_interface_cisco_ios(value):
 
 def split_interface_juniper_junos(value):
     return split_interface(".*%s.*" % JUNIPER_INTERFACE_PATTERN, value)
+
+
+def regex_search(value, regex):
+    ''' Perform re.search and return matched words '''
+
+    if type(regex) is not str:
+        return {"error": "%s(%s)" % (ERROR_PARAMETER, "invalid type for 'regex'")}
+
+    if type(value) is not str:
+        return {"error": "%s(%s)" % (ERROR_PARAMETER, "invalid type for 'value'")}
+
+    try:
+        pattern = re.compile(regex, re.IGNORECASE)
+
+    except Exception as ex:
+        return {"error": "%s(%s)" % (ERROR_REGEX, str(ex))}
+        
+    match = re.search(regex, value)
+    if match:
+        return match.group()
+    else:
+        # no match, return error message
+        result = {"error": "%s(pattern '%s' for '%s')" % (ERROR_NO_MATCH, regex, value)}
+        return result
+
+
+def ipaddr(value):
+    ''' Test if a string is a valid IP address '''
+
+    if type(value) is not str:
+        return {"error": "%s(%s)" % (ERROR_PARAMETER, "invalid type for 'value'")}
+
+    try:
+        return ipaddress.ip_address(value)
+
+    except Exception as ex:
+        return {"error": "%s(%s)" % (ERROR_PARAMETER, str(ex))}

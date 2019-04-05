@@ -150,6 +150,8 @@ class NetworkConfGen(object):
         self._template_engine.filters["split_interface"] = custom_filters.split_interface
         self._template_engine.filters["split_interface_cisco_ios"] = custom_filters.split_interface_cisco_ios
         self._template_engine.filters["split_interface_juniper_junos"] = custom_filters.split_interface_juniper_junos
+        self._template_engine.filters["regex_search"] = custom_filters.regex_search
+        self._template_engine.filters["ipaddr"] = custom_filters.ipaddr
         self._template_engine.add_extension('jinja2.ext.do')
 
     def _add_error_codes(self, parameter_dictionary):

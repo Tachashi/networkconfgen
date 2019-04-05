@@ -1,0 +1,2 @@
+hostname,hardware,secret,username,password,vlan_num,vlan_desc,ip_address,subnet,default_gw,ntp_server
+hqaccess1,catalyst2960,test,test,cisco,5000,<< Server Segment >>,192.168.100.47,24,192.168.100.150,192.168.100.440

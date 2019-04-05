@@ -1,0 +1,11 @@
+port_no,speed,duplex,mode,vlan,portfast,status,description
+FastEthernet0/1,auto,auto,access,100,o,o,To PC1
+FastEthernet0/2,auto,auto,access,100,o,o,To PC2
+FastEthernet0/3,auto,auto,access,100,o,x,
+FastEthernet0/4,auto,auto,access,100,o,x,
+FastEthernet0/5,auto,auto,access,101,o,o,To PC3
+FastEthernet0/6,auto,auto,access,101,o,o,To PC4
+FastEthernet0/7,auto,auto,access,101,o,x,
+FastEthernet0/8,auto,auto,access,101,o,x,
+GigabitEthernet0/1,1000,full,trunk,,x,o,To hqdist1 Gi0/1
+GibitEthernet0/2,1000,full,trunk,,x,o,To hqdist2 Gi0/1
