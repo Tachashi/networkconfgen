@@ -1,0 +1,110 @@
+!
+no service pad
+service timestamps debug datetime localtime
+service timestamps log datetime localtime
+service password-encryption
+!
+hostname hqaccess1
+!
+no logging console
+enable secret test
+!
+username test privilege 15 password cisco
+clock timezone JST 9
+ip subnet-zero
+no ip domain-lookup
+ip domain-name hqaccess1
+ip ssh version 2
+!
+spanning-tree mode pvst
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+!
+!
+interface FastEthernet0/1
+ description << To PC1 >>
+ switchport access 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ description << To PC2 >>
+ switchport access 100
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ switchport access 100
+ switchport mode access
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ switchport access 100
+ switchport mode access
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ description << To PC3 >>
+ switchport access 101
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ description << To PC4 >>
+ switchport access 101
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ switchport access 101
+ switchport mode access
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ switchport access 101
+ switchport mode access
+ shutdown
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+ description << To hqdist1 Gi0/1 >>
+ switchport mode trunk
+ duplex full
+ speed 1000
+!
+$$NO_MATCH_ERROR$$
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+$$INVALID_VLAN_RANGE$$
+!
+ip default-gateway 192.168.100.150
+no ip http server
+no ip http secure-server
+!
+logging 192.168.100.107
+snmp-server community C1sc0 RO
+snmp-server host 192.168.100.107 C1sc0
+banner login ^C
+============NOTICE==============
+| This is test device for demo |
+================================
+^C
+!
+line con 0
+line vty 0 4
+ login local
+line vty 5 15
+ login local
+!
+ntp server {'error': "$$PARAMETER_ERROR$$('192.168.100.440' does not appear to be an IPv4 or IPv6 address)"}
+!
+crypto key generate rsa modulus 2048
+!
+end
