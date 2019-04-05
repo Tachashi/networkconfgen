@@ -36,6 +36,8 @@ The following custom filters/extensions are added to the standard Jinja2 templat
     * for Juniper JUNOS, e.g. `{{ "ge-0/1/2"|split_interface_juniper_junos }}` will render to `{"chassis": "0", "module": "1", "port": "2"}`)
     * generic filter (`var|split_interface(regex)`) that requires a regular expression with three named groups: `chassis`, `module` and `port`
   * an experimental filter to convert interface names between vendors (e.g. `{{ "Gi0/0/1"|convert_interface_name("juniper_junos") }}` will render to `ge-0/0/0`)
+  * regex_search filter to perform regex search and return matched word. This can be used to check if input variables are "grammatically correct" (e.g. `{% if port_no | regex_search('^(Fast|Gigabit)*Ethernet[0-9/]+$') == port_no %}`)
+  * ipaddr filter to test if a string is a valid IP address (e.g. `{{ ntp_server | ipaddr }}` )
   * Jinja2 Expression Statement (`do`) extension, see [the Jinja 2 docmentation for details](http://jinja.pocoo.org/docs/2.9/extensions/#expression-statement) 
 
 The following example script shows, how to render jinja2 templates from strings:
